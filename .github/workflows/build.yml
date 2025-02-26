@@ -6,11 +6,12 @@ on:
     tags: [ "*" ]
   pull_request:
     branches: [ master ]
+  workflow_dispatch:
 
 jobs:
   source:
     if: ${{ !github.head_ref }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
         with:
@@ -23,7 +24,7 @@ jobs:
           name: source
           path: artifacts/
   linux:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         target: ["appimage", "fresh"]
@@ -175,7 +176,7 @@ jobs:
           name: ${{ env.OS }}-${{ env.TARGET }}
           path: artifacts/
   android:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     env:
       CCACHE_DIR: ${{ github.workspace }}/.ccache
       CCACHE_COMPILERCHECK: content
@@ -248,7 +249,7 @@ jobs:
       - name: Build
         run: ./.ci/ios.sh
   release:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     needs: [windows, linux, macos-universal, android, source]
     if: ${{ startsWith(github.ref, 'refs/tags/') }}
     steps:
